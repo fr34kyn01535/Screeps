@@ -3,7 +3,7 @@ import RoomManager from "./RoomManager";
 
 for(var i in Memory.creeps) {
     if(!Game.creeps[i]) {
-        delete Memory.creeps[i];
+        delete Memory.creeps[i]; 
     }
 }
 
