@@ -1,5 +1,5 @@
 import { IRoom } from "./Room"
-import { ProbeBehavior, ROLE, ICreepMemory, ICreep, AcolyteBehavior, AdeptBehavior } from "./Creep"
+import { ProbeBehavior, ROLE, ICreepMemory, ICreep, AcolyteBehavior, AdeptBehavior, BerserkBehavior } from "./Creep"
 import RoomManager from "./RoomManager";
 
 import * as _ from "lodash"
@@ -18,6 +18,7 @@ export default class CreepManager{
                 case ROLE.PROBE: return new ProbeBehavior(this.room, creep).Execute();
                 case ROLE.ACOLYTE: return new AcolyteBehavior(this.room, creep).Execute();
                 case ROLE.ADEPT: return new AdeptBehavior(this.room, creep).Execute();
+                case ROLE.BERSERK: return new BerserkBehavior(this.room, creep).Execute();
             } 
         })
     }
