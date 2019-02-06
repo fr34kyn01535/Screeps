@@ -14,7 +14,7 @@ export default class SpawnManager{
         this.Spawn = spawn;       
     } 
     public Run(){ 
-        if(this.room.Creeps.Creeps.length < 3 && this.room.InDanger){
+        if(this.room.Creeps.Creeps.filter(c => c.memory.Role == ROLE.PROBE).length < 2 && !this.room.InDanger){
             this.Spawn.spawnCreep([MOVE,WORK,CARRY],"Emergency Probe " + Game.time.toString(), {memory:<ICreepMemory>{ Role: ROLE.PROBE, Stage: STAGE.IDLE }});
             return;
         } 
@@ -22,10 +22,10 @@ export default class SpawnManager{
             if(this.room.Creeps.Creeps.filter(c => c.memory.Role == membership.Role).length < membership.Amount){
                 switch(membership.Role){
                     case ROLE.PROBE:
-                        this.Spawn.spawnCreep([MOVE,MOVE,WORK,WORK,CARRY,CARRY,WORK,CARRY],"Probe " + Game.time.toString(), {memory:<ICreepMemory>{ Role: ROLE.PROBE, Stage: STAGE.IDLE }});
+                        this.Spawn.spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY],"Probe " + Game.time.toString(), {memory:<ICreepMemory>{ Role: ROLE.PROBE, Stage: STAGE.IDLE }});
                         return true;
                     case ROLE.ACOLYTE:
-                        this.Spawn.spawnCreep([MOVE,MOVE,MOVE,MOVE,WORK,WORK,CARRY,CARRY,CARRY],"Acolyte " + Game.time.toString(), {memory:<ICreepMemory>{ Role: ROLE.ACOLYTE, Stage: STAGE.IDLE }});
+                        this.Spawn.spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY],"Acolyte " + Game.time.toString(), {memory:<ICreepMemory>{ Role: ROLE.ACOLYTE, Stage: STAGE.IDLE }});
                         return true;
                     case ROLE.ADEPT: 
                         this.Spawn.spawnCreep([MOVE,WORK,CARRY,MOVE,WORK,CARRY,WORK,MOVE],"Adept " + Game.time.toString(), {memory:<ICreepMemory>{ Role: ROLE.ADEPT, Stage: STAGE.IDLE }});

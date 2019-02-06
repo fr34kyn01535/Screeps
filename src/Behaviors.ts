@@ -22,24 +22,28 @@ export abstract  class RoleBehavior {
         var container : Resource | Structure | Tombstone | null = <Resource | null> this.creep.room.find(FIND_DROPPED_RESOURCES).filter(r => r.resourceType == RESOURCE_ENERGY).pop();
         if(container != null){
             this.creep.memory.Stage = STAGE.GATHERING;
-        }
-
-        container = <Tombstone | null> this.creep.room.find(FIND_TOMBSTONES).pop();
-        if(container != null){
-            this.creep.memory.Stage = STAGE.GATHERING;
+        } else{
+            container = <Tombstone | null> this.creep.room.find(FIND_TOMBSTONES).pop();
+            console.log("testing tomb");
+            if(container != null){
+                this.creep.memory.Stage = STAGE.GATHERING;
+            }else{
+                container = this.creep.pos.findClosestByPath(FIND_STRUCTURES,{filter: (structure) => (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && structure.store[RESOURCE_ENERGY] > 0 });
+           
+                if(container != null){
+                    this.creep.memory.Stage = STAGE.FETCHING;
+                }
+            }
         }
         
-        if(container == null){
-            container = this.creep.pos.findClosestByPath(FIND_STRUCTURES,{filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0 });
-            this.creep.memory.Stage = STAGE.FETCHING;
-        }
-
+       
         if(container == null){
             this.creep.memory.Stage = STAGE.IDLE; 
         }else{
             this.target = container;
             this.creep.memory.Target = this.target.id;
         }
+
     }
 }
 
@@ -60,6 +64,7 @@ export class AcolyteBehavior extends RoleBehavior {
         if(this.creep.memory.Stage != STAGE.FETCHING && this.creep.carry.energy == 0 || STAGE.IDLE) {
             this.refill();
         }
+        console.log(this.creep.memory.Stage);
 
         if(this.target != null){
             switch(this.creep.memory.Stage){
@@ -78,7 +83,7 @@ export class AcolyteBehavior extends RoleBehavior {
                         case OK:
                             if(this.creep.carry.energy == this.creep.carry.energy)
                                 this.findController();
-                        break;
+                            break;
                     }
                 case STAGE.EMPTYING:
                     var transferResult = this.creep.transfer(<Structure>this.target,RESOURCE_ENERGY);
@@ -216,15 +221,13 @@ export class AdeptBehavior extends RoleBehavior {
 
         site = <Structure | null > this.creep.room.find(FIND_STRUCTURES,{filter: (structure) => {
             return (
-                (((structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) && structure.hits < 75000) ||
+                (((structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) && structure.hits < 150000) ||
                 (structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.hits < structure.hitsMax * 0.9)) &&
                 this.room.Creeps.Creeps.filter(c => c.memory.Target == structure.id).length == 0
             ); 
         }}).sort((a,b) => (a.hitsMax / a.hits) - (b.hitsMax / b.hits) ).pop();
 
         this.creep.memory.Stage = STAGE.REPAIRING; 
-        
-        console.log(site);
         if(site == null){
             site = this.creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES);
             this.creep.memory.Stage = STAGE.BUILDING; 
@@ -340,7 +343,7 @@ export class ProbeBehavior extends RoleBehavior {
         if(container == null)
             container = this.creep.pos.findClosestByPath(FIND_STRUCTURES,{filter: (structure) => {
                 return (
-                    (structure.structureType == STRUCTURE_CONTAINER && (<StructureContainer>structure).store[RESOURCE_ENERGY] < (<StructureContainer>structure).storeCapacity)
+                    ((structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && (<StructureContainer | StructureStorage>structure).store[RESOURCE_ENERGY] < (<StructureContainer | StructureStorage>structure).storeCapacity)
                 );
             }});
 
