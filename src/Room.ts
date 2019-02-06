@@ -2,7 +2,7 @@
 import {ROLE} from "./Creep"
 
 export class RoleMembership{
-    constructor(role:ROLE, priority: number, amount:number){
+    constructor(role:ROLE, priority: number, amount:number){ 
         this.Role = role;
         this.Priority = priority;
         this.Amount = amount;
