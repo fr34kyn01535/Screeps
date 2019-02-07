@@ -16,7 +16,7 @@ export default class CreepManager{
     public Run(){
         this.Creeps.forEach(creep => {
             switch((<ICreepMemory>creep.memory).Role){
-                case ROLE.PROBE: return new ProbeBehavior(this.room, creep).Execute();
+                case ROLE.EPROBE: case ROLE.PROBE: return new ProbeBehavior(this.room, creep).Execute();
                 case ROLE.ACOLYTE: return new AcolyteBehavior(this.room, creep).Execute();
                 case ROLE.ADEPT: return new AdeptBehavior(this.room, creep).Execute();
                 case ROLE.BERSERK: return new BerserkBehavior(this.room, creep).Execute();

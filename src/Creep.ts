@@ -8,7 +8,8 @@ export enum ROLE{
     BERSERK = 3,
     STALKER = 4,
     SENTRY = 5,
-    ORACLE = 6
+    ORACLE = 6,
+    EPROBE = 7
 }
 
 export enum STAGE{

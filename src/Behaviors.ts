@@ -24,12 +24,11 @@ export abstract  class RoleBehavior {
             this.creep.memory.Stage = STAGE.GATHERING;
         } else{
             container = <Tombstone | null> this.creep.room.find(FIND_TOMBSTONES).pop();
-            console.log("testing tomb");
             if(container != null){
                 this.creep.memory.Stage = STAGE.GATHERING;
             }else{
                 container = this.creep.pos.findClosestByPath(FIND_STRUCTURES,{filter: (structure) => (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && structure.store[RESOURCE_ENERGY] > 0 });
-           
+            
                 if(container != null){
                     this.creep.memory.Stage = STAGE.FETCHING;
                 }
@@ -67,6 +66,7 @@ export class AcolyteBehavior extends RoleBehavior {
         console.log(this.creep.memory.Stage);
 
         if(this.target != null){
+            console.log(STAGE[this.creep.memory.Stage]);
             switch(this.creep.memory.Stage){
                 case STAGE.IDLE:
                     this.creep.moveTo(Game.flags["Idle"],{visualizePathStyle: {stroke: '#ffffff'}});
@@ -216,12 +216,12 @@ export class BerserkBehavior extends RoleBehavior{
 }
 
 export class AdeptBehavior extends RoleBehavior {
-    private findRepairTarget(){
+    private findTarget(){
         var site : Structure | ConstructionSite | null;
-
+        
         site = <Structure | null > this.creep.room.find(FIND_STRUCTURES,{filter: (structure) => {
             return (
-                (((structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) && structure.hits < 150000) ||
+                (((structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) && structure.hits < 100000) ||
                 (structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.hits < structure.hitsMax * 0.9)) &&
                 this.room.Creeps.Creeps.filter(c => c.memory.Target == structure.id).length == 0
             ); 
@@ -244,7 +244,7 @@ export class AdeptBehavior extends RoleBehavior {
     public Execute(){
         if(this.creep.memory.Stage == STAGE.FETCHING && this.creep.carry.energy == this.creep.carryCapacity || 
             this.creep.memory.Stage == STAGE.IDLE && this.creep.carry.energy != 0 || this.target == null || (this.target instanceof Structure && (<Structure>this.target).hits == (<Structure>this.target).hitsMax)) { 
-            this.findRepairTarget();
+            this.findTarget();
         }
 
         if(this.creep.memory.Stage != STAGE.FETCHING && this.creep.carry.energy == 0 || STAGE.IDLE) {
@@ -263,7 +263,7 @@ export class AdeptBehavior extends RoleBehavior {
                             this.creep.moveTo(this.target,{visualizePathStyle: {stroke: '#ffffff'}});
                         break;
                         case OK:
-                            this.findRepairTarget();
+                            this.findTarget();
                         break;
                     }
                     case STAGE.BUILDING:
@@ -277,7 +277,7 @@ export class AdeptBehavior extends RoleBehavior {
                                 this.refill();
                                 break;
                             case ERR_INVALID_TARGET:
-                                this.findRepairTarget();
+                                this.findTarget();
                                 break;
                         }
                         break; 
@@ -288,12 +288,13 @@ export class AdeptBehavior extends RoleBehavior {
                                 this.creep.moveTo(this.target,{visualizePathStyle: {stroke: '#ffffff'}});
                                 break; 
                             case ERR_INVALID_TARGET:
-                                this.findRepairTarget();
+                                this.findTarget();
                                 break;
                             case ERR_NOT_ENOUGH_RESOURCES:
                             case ERR_NOT_ENOUGH_ENERGY:
                                 this.refill();
                                 break;
+                            default: this.creep.say(repairResult.toString());
                         }
                     break;
                     
@@ -305,7 +306,7 @@ export class AdeptBehavior extends RoleBehavior {
                                 break; 
                             case ERR_INVALID_TARGET:
                             case ERR_FULL:
-                                this.findRepairTarget();
+                                this.findTarget();
                                 break;
                         }
                     break;
@@ -319,10 +320,14 @@ export class ProbeBehavior extends RoleBehavior {
 
     private findSource(){
         var sources = this.room.Room.find(FIND_SOURCES);
-        var maxProbesAtSource = this.room.Room.memory.RoleMemberships[ROLE.PROBE].Amount / sources.length;
-     
+        var availableSource : undefined | Source;
+        if(this.creep.memory.Role == ROLE.PROBE){
+        var maxProbesAtSource = (this.room.Room.memory.RoleMemberships[ROLE.PROBE].Amount / sources.length);
+            availableSource = _(sources).filter(source => this.room.Creeps.Creeps.filter(c => c.memory.Target == source.id && c.memory.Role == ROLE.PROBE).length < maxProbesAtSource).sample();
+        }else{
+            availableSource = _(sources).sample();
+        } 
 
-        var availableSource = _(sources).filter(source => this.room.Creeps.Creeps.filter(c => c.memory.Target == source.id).length < maxProbesAtSource).sample();
         if(availableSource != null){
             this.target = availableSource;
             this.creep.memory.Target = this.target.id;

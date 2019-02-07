@@ -12,10 +12,11 @@ export default class RoomManager {
         this.Room = <IRoom>room;
         this.Room.memory.RoleMemberships = [];
         this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.PROBE,1,2));
-        this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.ACOLYTE,85,2)); 
-        this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.ADEPT,20,4));
+        this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.ACOLYTE,15,6)); 
+        this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.ADEPT,20,6));
+
         this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.BERSERK,50,4)); 
-        this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.STALKER,50,4)); 
+        this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.STALKER,50,3)); 
         this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.ORACLE,49,2)); 
         this.Room.memory.RoleMemberships.push(new RoleMembership(ROLE.SENTRY,33,1)); 
  
