@@ -9,7 +9,8 @@ export enum ROLE{
     STALKER = 4,
     SENTRY = 5,
     ORACLE = 6,
-    EPROBE = 7
+    EPROBE = 7,
+    ARCHON = 8
 }
 
 export enum STAGE{
@@ -21,7 +22,7 @@ export enum STAGE{
     BUILDING = 5,
     REPAIRING = 6,
     GATHERING = 7,
-    FILLING = 7
+    FILLING = 8
 }
 
 export interface ICreep extends Creep{
@@ -31,5 +32,6 @@ export interface ICreep extends Creep{
 export interface ICreepMemory extends CreepMemory {
     Role : ROLE
     Stage: STAGE
+    Room : string
     Target : string | null
 }

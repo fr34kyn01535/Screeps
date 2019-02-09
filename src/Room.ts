@@ -1,5 +1,5 @@
 
-import {ROLE} from "./Creep"
+import { ROLE } from "./Creep"
 
 export class RoleMembership{
     constructor(role:ROLE, priority: number, amount:number){ 

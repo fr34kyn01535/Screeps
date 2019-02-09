@@ -6,7 +6,13 @@
         "strict": true,
         "outDir": "./",
         "newLine": "LF",
-        "removeComments": false 
+        "removeComments": false ,
+        "noImplicitThis": false,
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "allowUnusedLabels": true,
+        "allowSyntheticDefaultImports": true,
+        "allowUnreachableCode": false,
     },
     "include": [
         "./**/*.ts" 
